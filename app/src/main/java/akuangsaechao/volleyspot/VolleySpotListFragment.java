@@ -2,20 +2,15 @@ package akuangsaechao.volleyspot;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
-/**
- * Created by Akuan on 12/5/2017.
- */
 
 public class VolleySpotListFragment extends ListFragment {
     OnHeadlineSelectedListener mCallback;
@@ -33,15 +28,14 @@ public class VolleySpotListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
 
         // We need to use a different list item layout for devices older than Honeycomb
-        int layout = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ?
-                android.R.layout.simple_list_item_activated_1 : android.R.layout.simple_list_item_1;
+        int layout = android.R.layout.simple_list_item_activated_1;
 
         // Create an array adapter for the list view, using the Ipsum headlines array
 
         ArrayList<String> titles = new ArrayList<>();
 
 
-        setListAdapter(new ArrayAdapter<String>(getActivity(), layout, titles));
+        setListAdapter(new ArrayAdapter<>(getActivity(), layout, titles));
     }
 
     @Override
@@ -55,11 +49,10 @@ public class VolleySpotListFragment extends ListFragment {
 
                 Intent intent = new Intent(getActivity(), AllSpotsMap.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("recipeNumber", arg2);
+                intent.putExtra("MapLocation", arg2);
                 startActivity(intent);
                 getActivity().finish();
 
-                //Toast.makeText(getActivity(), "On long click listener", Toast.LENGTH_LONG).show();
                 return true;
             }
         });

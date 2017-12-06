@@ -1,69 +1,88 @@
 package akuangsaechao.volleyspot;
 
-import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
-/**
- * Created by Akuan on 12/5/2017.
- */
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+public class VolleySpotDetailFragment extends Fragment{
 
-public class VolleySpotDetailFragment extends Fragment {
     final static String ARG_POSITION = "position";
     int mCurrentPosition = -1;
-    TextView article;
+    GoogleMap googleMap;
+    MapView mMapView;
 
-    TextView recipeTitle;
-    TextView instructions;
-    ImageView imageView;
-    LinearLayout ingredientLayout;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        // If activity recreated (such as from screen rotate), restore
-        // the previous article selection set by onSaveInstanceState().
-        // This is primarily necessary when in the two-pane layout.
         if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(ARG_POSITION);
         }
 
-        View view = inflater.inflate(R.layout.fragment_volley_spot_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_volley_spot_detail, container, false);
 
-        recipeTitle = (TextView) view.findViewById(R.id.recipeTitle);
-        instructions = (TextView) view.findViewById(R.id.directionsTextView);
-        imageView = view.findViewById(R.id.recipeImageView);
-        ingredientLayout = (LinearLayout) view.findViewById(R.id.ingredientLinearLayout);
+        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        mMapView.onCreate(savedInstanceState);
+
+        mMapView.onResume(); // needed to get the map to display immediately
+
+        try {
+            MapsInitializer.initialize(getActivity().getApplicationContext());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        mMapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap mMap) {
+                googleMap = mMap;
+
+                try {
+                    // For showing a move to my location button
+                    googleMap.setMyLocationEnabled(true);
+                } catch(SecurityException e){
+
+                }
+
+                // For dropping a marker at a point on the Map
+                LatLng sydney = new LatLng(-34, 151);
+                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
+                
+                // For zooming automatically to the location of the marker
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
+                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            }
+        });
 
 
-        // Inflate the layout for this fragment
-        return view;
+        return rootView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        // During startup, check if there are arguments passed to the fragment.
-        // onStart is a good place to do this because the layout has already been
-        // applied to the fragment at this point so we can safely call the method
-        // below that sets the article text.
         Bundle args = getArguments();
         if (args != null) {
-            // Set article based on argument passed in
             updateArticleView(args.getInt(ARG_POSITION));
         } else if (mCurrentPosition != -1) {
-            // Set article based on saved instance state defined during onCreateView
             updateArticleView(mCurrentPosition);
         }
     }
@@ -72,7 +91,6 @@ public class VolleySpotDetailFragment extends Fragment {
 
         if (mCurrentPosition != position) {
 
-
             mCurrentPosition = position;
         }
     }
@@ -80,8 +98,7 @@ public class VolleySpotDetailFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
-        // Save the current article selection in case we need to recreate the fragment
         outState.putInt(ARG_POSITION, mCurrentPosition);
     }
+
 }

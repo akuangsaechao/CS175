@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "717827534833",
+    "project_id": "fluid-outcome-123722"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:717827534833:android:eceb1150ad3ee7a6",
+        "android_client_info": {
+          "package_name": "akuangsaechao.volleyspot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "717827534833-j20qf657o2dod5ti206687kkdqknav5l.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "717827534833-mcj46j04lcdcuk5464kj0j4horhgg9q1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "akuangsaechao.volleyspot",
+            "certificate_hash": "0dac7a2646235e0e4f8db4e3681c6d184f961efa"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3slERbeumDNjaDwi9XV4Gz7AIxT-55cY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
