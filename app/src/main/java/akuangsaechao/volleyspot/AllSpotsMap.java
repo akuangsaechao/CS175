@@ -23,14 +23,14 @@ import org.json.JSONObject;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback {
 
-    GoogleMap mMap;
+    private GoogleMap mMap;
+    private ArrayList<Item> volleySpotList = new ArrayList<>();
 
-    Double latitude, longitute;
-
-    LatLng point;
+    public static int _id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +40,7 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        GeoCoderFromAddress geoCoderFromAddress = new GeoCoderFromAddress("427 S. 5th Street, San Jose, CA 95112");
-        geoCoderFromAddress.execute();
+
     }
 
     @Override
@@ -57,18 +56,38 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
         if (c.moveToFirst()) {
             do {
                 String ID = c.getString(c.getColumnIndex(MyContentProvider._ID));
+                _id = Integer.parseInt(ID);
                 String title = c.getString(c.getColumnIndex(MyContentProvider.TITLE));
                 String address = c.getString(c.getColumnIndex(MyContentProvider.ADDRESS));
+
+                String[] addressBreakDown = address.split(" ");
+
+                String zipCode = addressBreakDown[addressBreakDown.length - 1];
+
+                Item item = new Item();
+
+                item.id = ID;
+                item.title = title;
+                item.address = address;
+
+                volleySpotList.add(_id, item);
+
+                //GeoCoderFromAddress geoCoderFromAddress = new GeoCoderFromAddress(title);
+                GeoCoderFromAddress geoCoderFromAddress = new GeoCoderFromAddress("427 S. 5th Street, San Jose, CA 95112");
+                geoCoderFromAddress.execute();
+
+                //WeatherAPI weatherAPI = new WeatherAPI(zipCode);
+                WeatherAPI weatherAPI = new WeatherAPI("95112");
+                weatherAPI.execute();
+
+                makeMap();
 
             } while (c.moveToNext());
         }
     }
 
-    public void initializeMap() {
-
-    }
-
     public class GeoCoderFromAddress extends AsyncTask<Void, Void, StringBuilder> {
+
         String place;
 
         public GeoCoderFromAddress(String place) {
@@ -115,11 +134,7 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
                 double lat = Double.valueOf(lat_helper);
                 double lng = Double.valueOf(lng_helper);
 
-                point = new LatLng(lat, lng);
-
-                mMap.addMarker(new MarkerOptions().position(point).title("Marker Title").snippet("Marker Description"));
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(12).build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                putGeoCode(lat, lng);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -128,6 +143,7 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
     }
 
     public class WeatherAPI extends AsyncTask<Void, Void, StringBuilder> {
+
         String place;
 
         public WeatherAPI(String place) {
@@ -166,16 +182,7 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
                 JSONObject location_jsonObj = jsonObj.getJSONObject("main");
                 String temperature = location_jsonObj.getString("temp");
 
-                mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-                mTemperature= mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-
-                
-
-                LatLng sydney = new LatLng(-34.852, 151.211);
-                mMap.addMarker(new MarkerOptions().position(sydney).title(temperature));
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+                putWeather(temperature);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -183,7 +190,33 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
-    private SensorManager mSensorManager;
-    private Sensor mTemperature;
+    public void putGeoCode(double lat, double lng){
+
+        Item item = volleySpotList.get(_id);
+        item.latitude = lat;
+        item.longitude = lng;
+        volleySpotList.set(_id, item);
+
+    }
+
+    public void putWeather(String temperature){
+
+        Item item = volleySpotList.get(_id);
+        item.temperature = temperature;
+        volleySpotList.set(_id, item);
+
+    }
+
+    public void makeMap(){
+
+        Item item = volleySpotList.get(_id);
+
+        LatLng latLng = new LatLng(item.latitude, item.longitude);
+
+        mMap.addMarker(new MarkerOptions().position(latLng).title(item.title).snippet(item.temperature));
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+    }
 
 }

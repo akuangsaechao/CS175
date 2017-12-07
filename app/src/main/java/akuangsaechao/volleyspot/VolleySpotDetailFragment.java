@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class VolleySpotDetailFragment extends Fragment{
 
@@ -30,6 +31,8 @@ public class VolleySpotDetailFragment extends Fragment{
     int mCurrentPosition = -1;
     GoogleMap googleMap;
     MapView mMapView;
+    int _id;
+    ArrayList<Item> volleySpotList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +102,7 @@ public class VolleySpotDetailFragment extends Fragment{
     }
 
     public class GeoCoderFromAddress extends AsyncTask<Void, Void, StringBuilder> {
+
         String place;
 
         public GeoCoderFromAddress(String place) {
@@ -145,11 +149,7 @@ public class VolleySpotDetailFragment extends Fragment{
                 double lat = Double.valueOf(lat_helper);
                 double lng = Double.valueOf(lng_helper);
 
-                LatLng point = new LatLng(lat, lng);
-
-                googleMap.addMarker(new MarkerOptions().position(point).title("Marker Title").snippet("Marker Description"));
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(point).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                putGeoCode(lat, lng);
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -158,6 +158,7 @@ public class VolleySpotDetailFragment extends Fragment{
     }
 
     public class WeatherAPI extends AsyncTask<Void, Void, StringBuilder> {
+
         String place;
 
         public WeatherAPI(String place) {
@@ -196,14 +197,41 @@ public class VolleySpotDetailFragment extends Fragment{
                 JSONObject location_jsonObj = jsonObj.getJSONObject("main");
                 String temperature = location_jsonObj.getString("temp");
 
-                LatLng sydney = new LatLng(-34.852, 151.211);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title(temperature));
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                putWeather(temperature);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    public void putGeoCode(double lat, double lng){
+
+        Item item = volleySpotList.get(_id);
+        item.latitude = lat;
+        item.longitude = lng;
+        volleySpotList.set(_id, item);
+
+    }
+
+    public void putWeather(String temperature){
+
+        Item item = volleySpotList.get(_id);
+        item.temperature = temperature;
+        volleySpotList.set(_id, item);
+
+    }
+
+    public void makeMap(){
+
+        Item item = volleySpotList.get(_id);
+
+        LatLng latLng = new LatLng(item.latitude, item.longitude);
+
+        googleMap.addMarker(new MarkerOptions().position(latLng).title(item.title).snippet(item.temperature));
+        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+    }
+
 }
