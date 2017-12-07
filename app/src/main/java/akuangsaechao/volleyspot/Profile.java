@@ -3,7 +3,7 @@ package akuangsaechao.volleyspot;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
+//import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -141,12 +141,12 @@ public class Profile extends FragmentActivity implements View.OnClickListener {
         String personId = account.getId();
         Uri personPhoto = account.getPhotoUrl();
 
-        try {
-            Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), personPhoto);
-            profilePicture.setImageBitmap(selectedImage);
-        } catch (IOException e) {
+        //try {
+            //Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), personPhoto);
+            //profilePicture.setImageBitmap(selectedImage);
+       // } catch (IOException e) {
 
-        }
+        //}
         signedIn = true;
     }
 

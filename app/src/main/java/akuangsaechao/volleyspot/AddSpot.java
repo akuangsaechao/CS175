@@ -1,9 +1,10 @@
 package akuangsaechao.volleyspot;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
+//import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class AddSpot extends AppCompatActivity {
 
@@ -56,15 +58,22 @@ public class AddSpot extends AppCompatActivity {
 
     public void addVolleySpot(String title, String location){
 
+        ContentValues contentValues = new ContentValues();
 
+        contentValues.put(MyContentProvider.TITLE, title);
+        contentValues.put(MyContentProvider.ADDRESS, location);
+
+        Uri uri = getContentResolver().insert(MyContentProvider.URI, contentValues);
+
+        Toast.makeText(AddSpot.this, uri.toString(), Toast.LENGTH_LONG).show();
 
     }
 
     public void onPickPhoto(View view) {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(intent, PICK_PHOTO_CODE);
-        }
+       // Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        //if (intent.resolveActivity(getPackageManager()) != null) {
+        //    startActivityForResult(intent, PICK_PHOTO_CODE);
+        //}
     }
 
     @Override
@@ -72,8 +81,8 @@ public class AddSpot extends AppCompatActivity {
         if (data != null) {
             try {
                 Uri photoUri = data.getData();
-                Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
-                volleySpotPicture.setImageBitmap(selectedImage);
+                //Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                //volleySpotPicture.setImageBitmap(selectedImage);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -42,8 +42,8 @@ public class MyContentProvider extends ContentProvider {
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(PROVIDER, "devices", VOLLEY_SPOT);
-        uriMatcher.addURI(PROVIDER, "devices/#", VOLLEY_SPOT_ID);
+        uriMatcher.addURI(PROVIDER, "volleyspots", VOLLEY_SPOT);
+        uriMatcher.addURI(PROVIDER, "volleyspots/#", VOLLEY_SPOT_ID);
     }
 
     private SQLiteDatabase db;
@@ -126,9 +126,9 @@ public class MyContentProvider extends ContentProvider {
         Log.v(TAG, "content provider: getType()");
 
         if (getMatchedID(uri) == VOLLEY_SPOT)
-            return "vnd.android.cursor.dir/vnd.wearable.devices";
+            return "VOLLEY_SPOT";
         else
-            return "vnd.android.cursor.item/vnd.wearable.devices";
+            return "VOLLEY_SPOT_ID";
     }
 
     @Override
