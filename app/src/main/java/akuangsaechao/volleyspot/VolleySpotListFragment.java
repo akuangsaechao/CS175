@@ -11,16 +11,12 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-
 public class VolleySpotListFragment extends ListFragment {
+
     OnHeadlineSelectedListener mCallback;
 
-    // The container Activity must implement this interface so the frag can deliver messages
     public interface OnHeadlineSelectedListener {
-        /**
-         * Called by HeadlinesFragment when a list item is selected
-         */
-        public void onArticleSelected(int position);
+        void onArticleSelected(int position);
     }
 
     @Override
@@ -30,11 +26,10 @@ public class VolleySpotListFragment extends ListFragment {
         // We need to use a different list item layout for devices older than Honeycomb
         int layout = android.R.layout.simple_list_item_activated_1;
 
-        // Create an array adapter for the list view, using the Ipsum headlines array
-
         ArrayList<String> titles = new ArrayList<>();
-
-
+        if (MainActivity.volleySpotList.size() > 0)
+            for (Item item : MainActivity.itemArray)
+                titles.add(item.title);
         setListAdapter(new ArrayAdapter<>(getActivity(), layout, titles));
     }
 
@@ -73,14 +68,10 @@ public class VolleySpotListFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-
-        // This makes sure that the container activity has implemented
-        // the callback interface. If not, it throws an exception.
         try {
             mCallback = (OnHeadlineSelectedListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnHeadlineSelectedListener");
+            throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
         }
     }
 
@@ -88,8 +79,8 @@ public class VolleySpotListFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         // Notify the parent activity of selected item
         mCallback.onArticleSelected(position);
-
         // Set the item as checked to be highlighted when in two-pane layout
         getListView().setItemChecked(position, true);
     }
+
 }

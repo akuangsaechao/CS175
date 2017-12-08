@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -20,6 +19,7 @@ public class AddSpot extends AppCompatActivity {
     private Button addVolleySpot;
     private EditText volleySpotTitle, volleySpotLocation;
     public final static int PICK_PHOTO_CODE = 1046;
+    private Bitmap selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +62,9 @@ public class AddSpot extends AppCompatActivity {
 
         contentValues.put(MyContentProvider.TITLE, title);
         contentValues.put(MyContentProvider.ADDRESS, location);
+        if (selectedImage != null){
+            contentValues.put(MyContentProvider.IMAGE, DbBitmapUtility.getBytes(selectedImage));
+        }
 
         Uri uri = getContentResolver().insert(MyContentProvider.URI, contentValues);
 
@@ -81,7 +84,7 @@ public class AddSpot extends AppCompatActivity {
         if (data != null) {
             try {
                 Uri photoUri = data.getData();
-                Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
                 volleySpotPicture.setImageBitmap(selectedImage);
             } catch (Exception e) {
                 e.printStackTrace();

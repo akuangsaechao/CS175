@@ -28,6 +28,7 @@ public class MyContentProvider extends ContentProvider {
     static final String _ID = "_id";
     static final String TITLE = "title";
     static final String ADDRESS = "address";
+    static final String IMAGE = "image";
 
 
     Context mContext;
@@ -54,7 +55,8 @@ public class MyContentProvider extends ContentProvider {
             "CREATE TABLE " + VOLLEY_SPOT_TABLE_NAME +
                     "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     " title TEXT NOT NULL, " +
-                    " address TEXT NOT NULL);";
+                    " address TEXT NOT NULL, " +
+                    " image BLOB);";
 
     private static class DB extends SQLiteOpenHelper {
 
