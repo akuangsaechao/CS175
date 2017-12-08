@@ -48,7 +48,7 @@ public class VolleySpotDetailFragment extends Fragment {
         title = rootView.findViewById(R.id.volleySpotTitle);
         linearLayout = rootView.findViewById(R.id.informationLayout);
         parentLayout = rootView.findViewById(R.id.parentLayout);
-        setInvisible();
+        //setInvisible();
 
         mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -78,6 +78,7 @@ public class VolleySpotDetailFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             updateArticleView(args.getInt(ARG_POSITION));
+            //setVisible();
         } else if (mCurrentPosition != -1) {
             updateArticleView(mCurrentPosition);
             makeMap();
@@ -88,8 +89,12 @@ public class VolleySpotDetailFragment extends Fragment {
         if (mCurrentPosition != position) {
             mCurrentPosition = position;
             Item item = MainActivity.itemArray.get(position);
-            imageView.setImageBitmap(item.image);
+            if (item.image != null)
+                imageView.setImageBitmap(item.image);
             title.setText(item.title);
+
+            if (googleMap != null)
+                makeMap();
         }
     }
 

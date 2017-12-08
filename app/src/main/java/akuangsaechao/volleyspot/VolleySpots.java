@@ -25,10 +25,6 @@ public class VolleySpots extends FragmentActivity implements VolleySpotListFragm
             VolleySpotListFragment firstFragment = new VolleySpotListFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, firstFragment).commit();
 
-        } else {
-            VolleySpotListFragment firstFragment = new VolleySpotListFragment();
-            VolleySpotDetailFragment detailFragment = new VolleySpotDetailFragment();
-            getSupportFragmentManager().beginTransaction().add(R.id.headlines_fragment, firstFragment).add(R.id.article_fragment, detailFragment).commit();
         }
 
     }
@@ -37,8 +33,8 @@ public class VolleySpots extends FragmentActivity implements VolleySpotListFragm
 
         VolleySpotDetailFragment articleFrag = (VolleySpotDetailFragment) getSupportFragmentManager().findFragmentById(R.id.article_fragment);
 
-        if (articleFrag != null) {
-            articleFrag.setVisible();
+        if (articleFrag != null && findViewById(R.id.fragment_container) == null) {
+            //articleFrag.setVisible();
             articleFrag.updateArticleView(position);
         } else {
             VolleySpotDetailFragment newFragment = new VolleySpotDetailFragment();
@@ -52,15 +48,4 @@ public class VolleySpots extends FragmentActivity implements VolleySpotListFragm
         }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
-        }
-    }
 }

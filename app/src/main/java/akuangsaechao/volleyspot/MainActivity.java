@@ -88,8 +88,9 @@ public class MainActivity extends AppCompatActivity {
                 String title = c.getString(c.getColumnIndex(MyContentProvider.TITLE));
                 String address = c.getString(c.getColumnIndex(MyContentProvider.ADDRESS));
                 byte[] image = c.getBlob(c.getColumnIndex(MyContentProvider.IMAGE));
-
-                Bitmap bitmap = DbBitmapUtility.getImage(image);
+                Bitmap bitmap = null;
+                if (image != null)
+                    bitmap = DbBitmapUtility.getImage(image);
 
                 String[] addressBreakDown = address.split(" ");
 
@@ -222,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void putGeoCode(double lat, double lng){
+    public void putGeoCode(double lat, double lng) {
 
         Item item = volleySpotList.get(_id);
         item.latitude = lat;
@@ -231,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void putWeather(String temperature){
+    public void putWeather(String temperature) {
 
         Item item = volleySpotList.get(_id);
         item.temperature = temperature;
@@ -239,9 +240,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void makeList(){
+    public void makeList() {
 
-        for (int index : volleySpotList.keySet()){
+        for (int index : volleySpotList.keySet()) {
 
             itemArray.add(volleySpotList.get(index));
 
