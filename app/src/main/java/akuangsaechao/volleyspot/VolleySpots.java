@@ -6,7 +6,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class VolleySpots extends FragmentActivity implements VolleySpotListFragment.OnHeadlineSelectedListener {
+
+    public static ArrayList<Item> items = new ArrayList<>();
+
+    static {
+        if (MainActivity.volleySpotList.size() > 0)
+            for (int index : MainActivity.volleySpotList.keySet())
+                items.add(MainActivity.volleySpotList.get(index));
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +44,7 @@ public class VolleySpots extends FragmentActivity implements VolleySpotListFragm
         VolleySpotDetailFragment articleFrag = (VolleySpotDetailFragment) getSupportFragmentManager().findFragmentById(R.id.article_fragment);
 
         if (articleFrag != null && findViewById(R.id.fragment_container) == null) {
-            //articleFrag.setVisible();
+            articleFrag.setVisible();
             articleFrag.updateArticleView(position);
         } else {
             VolleySpotDetailFragment newFragment = new VolleySpotDetailFragment();

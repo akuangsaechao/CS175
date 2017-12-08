@@ -55,6 +55,13 @@ public class Profile extends FragmentActivity implements View.OnClickListener {
         mRevokeButton = findViewById(R.id.revoke_access_button);
         profilePicture = findViewById(R.id.profilePicture);
 
+        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+        if (acct != null) {
+            TextView text = findViewById(R.id.emailTextView);
+            text.setText(acct.getEmail());
+            signedIn = true;
+        }
+
         // Add click listeners for the buttons
         mSignInButton.setOnClickListener(this);
         mSignOutButton.setOnClickListener(this);
@@ -133,14 +140,7 @@ public class Profile extends FragmentActivity implements View.OnClickListener {
     private void updateUI(GoogleSignInAccount account) {
         TextView text = findViewById(R.id.emailTextView);
         text.setText(account.getEmail());
-
-        String personName = account.getDisplayName();
-        String personGivenName = account.getGivenName();
-        String personFamilyName = account.getFamilyName();
-        String personEmail = account.getEmail();
-        String personId = account.getId();
         Uri personPhoto = account.getPhotoUrl();
-
         try {
             Bitmap selectedImage = MediaStore.Images.Media.getBitmap(this.getContentResolver(), personPhoto);
             profilePicture.setImageBitmap(selectedImage);

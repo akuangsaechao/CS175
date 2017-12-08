@@ -26,10 +26,13 @@ public class VolleySpotListFragment extends ListFragment {
         // We need to use a different list item layout for devices older than Honeycomb
         int layout = android.R.layout.simple_list_item_activated_1;
 
+
+
         ArrayList<String> titles = new ArrayList<>();
         if (MainActivity.volleySpotList.size() > 0)
-            for (Item item : MainActivity.itemArray)
-                titles.add(item.title);
+            for (int index : MainActivity.volleySpotList.keySet())
+                titles.add(MainActivity.volleySpotList.get(index).title);
+
         setListAdapter(new ArrayAdapter<>(getActivity(), layout, titles));
     }
 
@@ -61,7 +64,7 @@ public class VolleySpotListFragment extends ListFragment {
         // When in two-pane layout, set the listview to highlight the selected list item
         // (We do this during onStart because at the point the listview is available.)
         if (getFragmentManager().findFragmentById(R.id.article_fragment) != null) {
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            //getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
     }
 
@@ -80,7 +83,7 @@ public class VolleySpotListFragment extends ListFragment {
         // Notify the parent activity of selected item
         mCallback.onArticleSelected(position);
         // Set the item as checked to be highlighted when in two-pane layout
-        getListView().setItemChecked(position, true);
+        //getListView().setItemChecked(position, true);
     }
 
 }

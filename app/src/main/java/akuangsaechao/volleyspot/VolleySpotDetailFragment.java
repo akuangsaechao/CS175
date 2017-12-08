@@ -17,11 +17,13 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class VolleySpotDetailFragment extends Fragment {
 
     final static String ARG_POSITION = "position";
+    public static Marker previousMarker = null;
     int mCurrentPosition = -1;
     GoogleMap googleMap;
     MapView mMapView;
@@ -48,7 +50,7 @@ public class VolleySpotDetailFragment extends Fragment {
         title = rootView.findViewById(R.id.volleySpotTitle);
         linearLayout = rootView.findViewById(R.id.informationLayout);
         parentLayout = rootView.findViewById(R.id.parentLayout);
-        //setInvisible();
+        setInvisible();
 
         mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -78,7 +80,7 @@ public class VolleySpotDetailFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null) {
             updateArticleView(args.getInt(ARG_POSITION));
-            //setVisible();
+            setVisible();
         } else if (mCurrentPosition != -1) {
             updateArticleView(mCurrentPosition);
             makeMap();
@@ -88,7 +90,7 @@ public class VolleySpotDetailFragment extends Fragment {
     public void updateArticleView(int position) {
         if (mCurrentPosition != position) {
             mCurrentPosition = position;
-            Item item = MainActivity.itemArray.get(position);
+            Item item = VolleySpots.items.get(position);
             if (item.image != null)
                 imageView.setImageBitmap(item.image);
             title.setText(item.title);
@@ -108,9 +110,12 @@ public class VolleySpotDetailFragment extends Fragment {
 
         if (mCurrentPosition >= 0) {
 
-            Item item = MainActivity.itemArray.get(mCurrentPosition);
+            if (previousMarker != null)
+                previousMarker.remove();
+
+            Item item = VolleySpots.items.get(mCurrentPosition);
             LatLng latLng = new LatLng(item.latitude, item.longitude);
-            googleMap.addMarker(new MarkerOptions().position(latLng).title(item.title).snippet(item.temperature));
+            previousMarker = googleMap.addMarker(new MarkerOptions().position(latLng).title(item.title).snippet(item.temperature));
             CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
