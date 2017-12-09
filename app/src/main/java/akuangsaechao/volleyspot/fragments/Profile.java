@@ -2,6 +2,7 @@ package akuangsaechao.volleyspot.fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import java.io.IOException;
 import akuangsaechao.volleyspot.MainActivity;
 import akuangsaechao.volleyspot.R;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class Profile extends Fragment implements View.OnClickListener {
 
     private OnFragmentInteractionListener mListener;
@@ -41,9 +44,10 @@ public class Profile extends Fragment implements View.OnClickListener {
     private Button mSignOutButton;
     private Button mRevokeButton;
     private ImageView profilePicture;
-    private TextView email, firstName, lastName;
+    private TextView email, firstName, preference;
 
     private boolean signedIn = false;
+
     public Profile() {
 
     }
@@ -56,7 +60,6 @@ public class Profile extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
 
 
     }
@@ -76,14 +79,27 @@ public class Profile extends Fragment implements View.OnClickListener {
         mRevokeButton = rootView.findViewById(R.id.revoke_access_button);
         profilePicture = rootView.findViewById(R.id.profilePicture);
 
-        firstName = rootView.findViewById(R.id.firstName);
-        lastName = rootView.findViewById(R.id.lastName);
+        //firstName = rootView.findViewById(R.id.firstName);
+        preference = rootView.findViewById(R.id.preference);
         email = rootView.findViewById(R.id.emailTextView);
 
         GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getActivity());
         if (acct != null) {
             email.setText(acct.getEmail());
-            firstName.setText(acct.getDisplayName());
+            //firstName.setText(acct.getDisplayName());
+            String personName = acct.getDisplayName();
+            String personGivenName = acct.getGivenName();
+            String personFamilyName = acct.getFamilyName();
+            String personEmail = acct.getEmail();
+            String personId = acct.getId();
+            Uri personPhoto = acct.getPhotoUrl();
+
+            SharedPreferences preferences = getActivity().getSharedPreferences("MyPreferences", MODE_PRIVATE);
+            String preferredSpot = preferences.getString("SPOT", null);
+            if (preferredSpot != null)
+                preference.setText(preferredSpot);
+            else
+                preference.setText("No Preferences");
             signedIn = true;
         }
 
@@ -125,6 +141,8 @@ public class Profile extends Fragment implements View.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(getActivity(), "Signed Out", Toast.LENGTH_LONG).show();
+                        email.setText("");
+                        preference.setText("");
                         signedIn = false;
                     }
                 });
@@ -136,6 +154,8 @@ public class Profile extends Fragment implements View.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(getActivity(), "Access Revoked", Toast.LENGTH_LONG).show();
+                        email.setText("");
+                        preference.setText("");
                         signedIn = false;
                     }
                 });
@@ -164,6 +184,14 @@ public class Profile extends Fragment implements View.OnClickListener {
     private void updateUI(GoogleSignInAccount account) {
         //TextView text = findViewById(R.id.emailTextView);
         //text.setText(account.getEmail());
+        email.setText(account.getEmail());
+        //firstName.setText(account.getDisplayName());
+        SharedPreferences preferences = getActivity().getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        String preferredSpot = preferences.getString("SPOT", null);
+        if (preferredSpot != null)
+            preference.setText(preferredSpot);
+        else
+            preference.setText("No Preferences");
         Uri personPhoto = account.getPhotoUrl();
         try {
             Bitmap selectedImage = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), personPhoto);
@@ -183,7 +211,8 @@ public class Profile extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
         }

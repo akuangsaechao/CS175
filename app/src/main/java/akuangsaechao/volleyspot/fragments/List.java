@@ -30,6 +30,13 @@ public class List extends Fragment {
                 items.add(MainActivity.volleySpotList.get(index));
     }
 
+    public static void refresh(){
+        items = new ArrayList<>();
+        if (MainActivity.volleySpotList.size() > 0)
+            for (int index : MainActivity.volleySpotList.keySet())
+                items.add(MainActivity.volleySpotList.get(index));
+    }
+
     public List() {
     }
 
@@ -53,6 +60,7 @@ public class List extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        refresh();
         if (getArguments() != null) {
             position = getArguments().getInt(POSITION);
         } else {
@@ -115,4 +123,6 @@ public class List extends Fragment {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+
 }

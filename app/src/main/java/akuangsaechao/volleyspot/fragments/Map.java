@@ -86,7 +86,7 @@ public class Map extends Fragment implements OnMapReadyCallback, SensorEventList
 
             for (int index : MainActivity.volleySpotList.keySet()) {
                 LatLng latLng = new LatLng(MainActivity.volleySpotList.get(index).latitude, MainActivity.volleySpotList.get(index).longitude);
-                mMap.addMarker(new MarkerOptions().position(latLng).title(MainActivity.volleySpotList.get(index).title).snippet(MainActivity.volleySpotList.get(index).temperature));
+                mMap.addMarker(new MarkerOptions().position(latLng).title(MainActivity.volleySpotList.get(index).title));
             }
 
             LatLng latLng = new LatLng(37.33333, -121.9);
@@ -95,7 +95,8 @@ public class Map extends Fragment implements OnMapReadyCallback, SensorEventList
 
         } else {
             LatLng latLng = new LatLng(VolleySpots.items.get(mapLocation).latitude, VolleySpots.items.get(mapLocation).longitude);
-            mMap.addMarker(new MarkerOptions().position(latLng).title(VolleySpots.items.get(mapLocation).title).snippet(VolleySpots.items.get(mapLocation).temperature));
+            //mMap.addMarker(new MarkerOptions().position(latLng).title(VolleySpots.items.get(mapLocation).title).snippet(VolleySpots.items.get(mapLocation).temperature));
+            mMap.addMarker(new MarkerOptions().position(latLng).title(VolleySpots.items.get(mapLocation).title));
             CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }

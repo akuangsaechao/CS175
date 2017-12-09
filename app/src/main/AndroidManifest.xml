@@ -42,7 +42,9 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".SpotDetails"></activity>
+        <activity
+            android:name=".SpotDetails"
+            android:parentActivityName=".MainActivity" />
     </application>
 
 </manifest>

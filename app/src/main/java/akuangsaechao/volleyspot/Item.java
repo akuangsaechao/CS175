@@ -11,6 +11,7 @@ public class Item {
     public String id;
     public String title;
     public String address;
+    public String description;
     public double longitude;
     public double latitude;
     public String temperature;

@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements Add.OnFragmentInt
                 String ID = c.getString(c.getColumnIndex(MyContentProvider._ID));
                 String title = c.getString(c.getColumnIndex(MyContentProvider.TITLE));
                 String address = c.getString(c.getColumnIndex(MyContentProvider.ADDRESS));
+                String description = c.getString(c.getColumnIndex(MyContentProvider.DESCRIPTION));
                 byte[] image = c.getBlob(c.getColumnIndex(MyContentProvider.IMAGE));
                 Bitmap bitmap = null;
                 if (image != null)
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements Add.OnFragmentInt
                 item.title = title;
                 item.address = address;
                 item.image = bitmap;
+                item.description = description;
 
                 volleySpotList.put(Integer.parseInt(ID), item);
 

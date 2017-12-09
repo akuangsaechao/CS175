@@ -48,7 +48,7 @@ public class VolleySpotDetailFragment extends Fragment {
         title = rootView.findViewById(R.id.volleySpotTitle);
         linearLayout = rootView.findViewById(R.id.informationLayout);
         parentLayout = rootView.findViewById(R.id.parentLayout);
-
+        setInvisible();
         mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
         mMapView.onResume();
@@ -89,8 +89,12 @@ public class VolleySpotDetailFragment extends Fragment {
         if (mCurrentPosition != position) {
             mCurrentPosition = position;
             Item item = VolleySpots.items.get(position);
-            if (item.image != null)
+            if (item.image != null){
+                imageView.setImageResource(android.R.color.transparent);
+                imageView.setBackgroundResource(0);
                 imageView.setImageBitmap(item.image);
+
+            }
             title.setText(item.title);
 
             if (googleMap != null)
@@ -113,7 +117,7 @@ public class VolleySpotDetailFragment extends Fragment {
 
             Item item = VolleySpots.items.get(mCurrentPosition);
             LatLng latLng = new LatLng(item.latitude, item.longitude);
-            previousMarker = googleMap.addMarker(new MarkerOptions().position(latLng).title(item.title).snippet(item.temperature));
+            previousMarker = googleMap.addMarker(new MarkerOptions().position(latLng));
             CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(12).build();
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 

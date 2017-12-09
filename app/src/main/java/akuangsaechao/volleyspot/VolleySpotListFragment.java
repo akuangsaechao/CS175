@@ -42,12 +42,9 @@ public class VolleySpotListFragment extends ListFragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-                Intent intent = new Intent(getActivity(), AllSpotsMap.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent intent = new Intent(getActivity(), SpotDetails.class);
                 intent.putExtra("MapLocation", arg2);
                 startActivity(intent);
-                getActivity().finish();
-
                 return true;
             }
         });

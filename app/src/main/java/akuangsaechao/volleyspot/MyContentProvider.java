@@ -28,6 +28,7 @@ public class MyContentProvider extends ContentProvider {
     public static final String _ID = "_id";
     public static final String TITLE = "title";
     public static final String ADDRESS = "address";
+    public static final String DESCRIPTION = "description";
     public static final String IMAGE = "image";
 
 
@@ -56,6 +57,7 @@ public class MyContentProvider extends ContentProvider {
                     "(_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     " title TEXT NOT NULL, " +
                     " address TEXT NOT NULL, " +
+                    " description TEXT NOT NULL, " +
                     " image BLOB);";
 
     private static class DB extends SQLiteOpenHelper {
