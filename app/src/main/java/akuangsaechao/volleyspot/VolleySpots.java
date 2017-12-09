@@ -1,10 +1,9 @@
 package akuangsaechao.volleyspot;
 
-import android.content.res.Configuration;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -26,9 +25,6 @@ public class VolleySpots extends FragmentActivity implements VolleySpotListFragm
 
         if (findViewById(R.id.fragment_container) != null) {
 
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
             if (savedInstanceState != null) {
                 return;
             }

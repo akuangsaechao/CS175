@@ -1,47 +1,72 @@
-package akuangsaechao.volleyspot;
+package akuangsaechao.volleyspot.fragments;
 
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback, SensorEventListener {
+import akuangsaechao.volleyspot.MainActivity;
+import akuangsaechao.volleyspot.R;
+import akuangsaechao.volleyspot.VolleySpots;
 
+public class Map extends Fragment implements OnMapReadyCallback, SensorEventListener {
+
+    private OnFragmentInteractionListener mListener;
     private GoogleMap mMap;
     private int mapLocation = -1;
     private SensorManager mSensorManager;
     private Sensor mTemperature;
+    MapView mapView;
+    public Map() {
+    }
 
+    public static Map newInstance() {
+        Map fragment = new Map();
+        return fragment;
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_spots_map);
-        Bundle extras = getIntent().getExtras();
+        Bundle extras = getActivity().getIntent().getExtras();
         if (extras != null) {
             mapLocation = extras.getInt("MapLocation");
         } else {
             mapLocation = -1;
         }
 
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
         mTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+    }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        return inflater.inflate(R.layout.fragment_map, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState){
+        mapView = view.findViewById(R.id.map);
+        mapView.onCreate(savedInstanceState);
+        mapView.onResume();
+        mapView.getMapAsync(this);
     }
 
     @Override
@@ -79,13 +104,13 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mTemperature, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
     }
@@ -94,7 +119,7 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
     @Override
     public void onSensorChanged(SensorEvent event) {
         float ambient_temperature = event.values[0];
-        Toast.makeText(AllSpotsMap.this, "Ambient Temperature:\n " + String.valueOf(ambient_temperature), Toast.LENGTH_LONG).show();
+        //Toast.makeText(getActivity(), "Ambient Temperature:\n " + String.valueOf(ambient_temperature), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -102,4 +127,28 @@ public class AllSpotsMap extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    public void onButtonPressed(Uri uri) {
+        if (mListener != null) {
+            mListener.onFragmentInteraction(uri);
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString() + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentInteraction(Uri uri);
+    }
 }

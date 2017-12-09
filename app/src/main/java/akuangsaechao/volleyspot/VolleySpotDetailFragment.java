@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,19 +21,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class VolleySpotDetailFragment extends Fragment {
 
-    final static String ARG_POSITION = "position";
+    public final static String ARG_POSITION = "position";
     public static Marker previousMarker = null;
-    int mCurrentPosition = -1;
-    GoogleMap googleMap;
-    MapView mMapView;
-    ImageView imageView;
-    TextView title;
-    LinearLayout linearLayout, parentLayout;
+    public int mCurrentPosition = -1;
+    public GoogleMap googleMap;
+    public MapView mMapView;
+    public ImageView imageView;
+    public TextView title;
+    public LinearLayout linearLayout, parentLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -50,7 +48,6 @@ public class VolleySpotDetailFragment extends Fragment {
         title = rootView.findViewById(R.id.volleySpotTitle);
         linearLayout = rootView.findViewById(R.id.informationLayout);
         parentLayout = rootView.findViewById(R.id.parentLayout);
-        setInvisible();
 
         mMapView = rootView.findViewById(R.id.mapView);
         mMapView.onCreate(savedInstanceState);
@@ -84,6 +81,7 @@ public class VolleySpotDetailFragment extends Fragment {
         } else if (mCurrentPosition != -1) {
             updateArticleView(mCurrentPosition);
             makeMap();
+            setInvisible();
         }
     }
 

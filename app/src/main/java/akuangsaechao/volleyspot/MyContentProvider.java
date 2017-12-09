@@ -23,12 +23,12 @@ public class MyContentProvider extends ContentProvider {
 
     static final String PROVIDER = "akuangsaechao.myapplication.myprovider";
     static final String URL = "content://" + PROVIDER + "/volleySpots";
-    static final Uri URI = Uri.parse(URL);
+    public static final Uri URI = Uri.parse(URL);
 
-    static final String _ID = "_id";
-    static final String TITLE = "title";
-    static final String ADDRESS = "address";
-    static final String IMAGE = "image";
+    public static final String _ID = "_id";
+    public static final String TITLE = "title";
+    public static final String ADDRESS = "address";
+    public static final String IMAGE = "image";
 
 
     Context mContext;

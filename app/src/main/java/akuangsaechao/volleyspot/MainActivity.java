@@ -1,75 +1,79 @@
 package akuangsaechao.volleyspot;
 
-import android.content.ClipData;
-import android.content.Intent;
+import android.support.v4.app.Fragment;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
+import android.view.MenuItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+import akuangsaechao.volleyspot.fragments.Add;
+import akuangsaechao.volleyspot.fragments.List;
+import akuangsaechao.volleyspot.fragments.Map;
+import akuangsaechao.volleyspot.fragments.Profile;
 
-    Button volleyListButton, volleyMapButton, volleyAddButton, volleyProfileButton;
+
+public class MainActivity extends AppCompatActivity implements Add.OnFragmentInteractionListener, List.OnFragmentInteractionListener, Map.OnFragmentInteractionListener, Profile.OnFragmentInteractionListener, VolleySpotListFragment.OnHeadlineSelectedListener {
+
     boolean initialize = false;
+    boolean firstTime = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        volleyListButton = findViewById(R.id.VolleyList);
-        volleyMapButton = findViewById(R.id.VolleyMap);
-        volleyAddButton = findViewById(R.id.VolleyAdd);
-        volleyProfileButton = findViewById(R.id.VolleyProfile);
-
-        volleyListButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, VolleySpots.class);
-                startActivity(intent);
-            }
-        });
-
-        volleyMapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AllSpotsMap.class);
-                startActivity(intent);
-            }
-        });
-
-        volleyAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddSpot.class);
-                startActivity(intent);
-            }
-        });
-
-        volleyProfileButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, Profile.class);
-                startActivity(intent);
-            }
-        });
         if (!initialize)
             getAllVolleySpots();
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        Fragment selectedFragment = null;
+                        switch (item.getItemId()) {
+                            case R.id.action_list:
+                                selectedFragment = List.newInstance();
+                                break;
+                            case R.id.action_map:
+                                selectedFragment = Map.newInstance();
+                                break;
+                            case R.id.action_add:
+                                selectedFragment = Add.newInstance();
+                                break;
+                            case R.id.action_profile:
+                                selectedFragment = Profile.newInstance();
+                                break;
+
+                        }
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(R.id.frame_layout, selectedFragment);
+                        transaction.commit();
+                        return true;
+                    }
+                });
+
+        if (firstTime) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.frame_layout, List.newInstance());
+            transaction.commit();
+            firstTime = false;
+        }
 
     }
 
@@ -134,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
             try {
                 HttpURLConnection conn = null;
                 StringBuilder jsonResults = new StringBuilder();
-                String googleMapUrl = "http://maps.googleapis.com/maps/api/geocode/json?address=" + this.place + "&sensor=false";
+                //String googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&key=AIzaSyDvcHktVxizrhdJ-TS1txRMOgGuxO0hPOI";
+                String after = place.trim().replaceAll(" ", "+");
+                String googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + after + "&key=AIzaSyDvcHktVxizrhdJ-TS1txRMOgGuxO0hPOI";
                 URL url = new URL(googleMapUrl);
                 conn = (HttpURLConnection) url.openConnection();
                 InputStreamReader in = new InputStreamReader(conn.getInputStream());
@@ -192,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 HttpURLConnection conn = null;
                 StringBuilder jsonResults = new StringBuilder();
-                String googleMapUrl = "http://api.openweathermap.org/data/2.5/weather?zip=" + place + ",us&APPID=7424bb17c1738362907a47e05e8686ee";
+                String googleMapUrl = "https://api.openweathermap.org/data/2.5/weather?zip=" + place + ",us&units=imperial&APPID=7424bb17c1738362907a47e05e8686ee";
                 URL url = new URL(googleMapUrl);
                 conn = (HttpURLConnection) url.openConnection();
                 InputStreamReader in = new InputStreamReader(conn.getInputStream());
@@ -241,6 +247,20 @@ public class MainActivity extends AppCompatActivity {
         item.temperature = temperature;
         volleySpotList.put(id, item);
 
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onArticleSelected(int position) {
+        List newFragment = List.newInstance(position);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frame_layout, newFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
 }

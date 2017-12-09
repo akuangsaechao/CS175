@@ -1,6 +1,6 @@
 package akuangsaechao.volleyspot;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -23,10 +23,7 @@ public class VolleySpotListFragment extends ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // We need to use a different list item layout for devices older than Honeycomb
         int layout = android.R.layout.simple_list_item_activated_1;
-
-
 
         ArrayList<String> titles = new ArrayList<>();
         if (MainActivity.volleySpotList.size() > 0)
@@ -60,29 +57,25 @@ public class VolleySpotListFragment extends ListFragment {
     @Override
     public void onStart() {
         super.onStart();
-
-        // When in two-pane layout, set the listview to highlight the selected list item
-        // (We do this during onStart because at the point the listview is available.)
         if (getFragmentManager().findFragmentById(R.id.article_fragment) != null) {
             //getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
     }
 
+
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
-            mCallback = (OnHeadlineSelectedListener) activity;
+            mCallback = (OnHeadlineSelectedListener) context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString() + " must implement OnHeadlineSelectedListener");
+            throw new ClassCastException(context.toString() + " must implement OnHeadlineSelectedListener");
         }
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        // Notify the parent activity of selected item
         mCallback.onArticleSelected(position);
-        // Set the item as checked to be highlighted when in two-pane layout
         //getListView().setItemChecked(position, true);
     }
 
