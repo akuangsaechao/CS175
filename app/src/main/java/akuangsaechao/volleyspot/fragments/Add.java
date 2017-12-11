@@ -109,6 +109,8 @@ public class Add extends Fragment {
         volleySpotTitle.setText("");
         volleySpotLocation.setText("");
         volleySpotDescription.setText("");
+        volleySpotPicture.setImageResource(android.R.color.transparent);
+        volleySpotPicture.setBackgroundResource(0);
         volleySpotPicture.setBackgroundResource(R.drawable.app_icon);
 
         getAllVolleySpots();

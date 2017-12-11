@@ -11,6 +11,8 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import akuangsaechao.volleyspot.fragments.List;
+
 public class VolleySpotListFragment extends ListFragment {
 
     OnHeadlineSelectedListener mCallback;
@@ -22,6 +24,8 @@ public class VolleySpotListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        List.refresh();
 
         int layout = android.R.layout.simple_list_item_activated_1;
 
